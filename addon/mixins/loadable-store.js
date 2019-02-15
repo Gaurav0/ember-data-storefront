@@ -56,7 +56,7 @@ export default Mixin.create({
     @return {Promise} a promise resolving with the record array
     @public
   */
-  loadAll(type, options={}) {
+  loadAll(type, options={ reload: false, backgroundReload: true }) {
     let forceReload = options.reload;
     delete options.reload;
     let query = this.coordinator.recordArrayQueryFor(type, options);
@@ -67,7 +67,9 @@ export default Mixin.create({
 
     } else {
       promise = resolve(query.value);
-      query.run(); // background reload. TODO: swap for expires/stale
+      if (options.backgroundReload) {
+        query.run(); // background reload. TODO: swap for expires/stale
+      }
     }
 
     return promise;
@@ -111,7 +113,7 @@ export default Mixin.create({
     @return {Promise} a promise resolving with the record array
     @public
   */
-  loadRecord(type, id, options={}) {
+  loadRecord(type, id, options={ reload: false, backgroundReload: true }) {
     let query = this.coordinator.recordQueryFor(type, id, options);
     let forceReload = options.reload;
     let promise;
@@ -121,7 +123,9 @@ export default Mixin.create({
 
     } else {
       promise = resolve(query.value);
-      query.run(); // background reload. TODO: swap for expires/stale
+      if (options.backgroundReload) {
+        query.run(); // background reload. TODO: swap for expires/stale
+      }
     }
 
     return promise;
